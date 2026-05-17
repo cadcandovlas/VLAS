@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>© 2026 cadcando-VLAS Visual Linear Algebra Suite</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- SEO Meta Tags -->
+<meta name="description" content="The Linear Algebra Suite provides interactive engineering models, visualization tools, instructor notes, and a complete student guide for mastering linear algebra concepts.">
+<meta name="keywords" content="Linear Algebra, Engineering Tools, Visualization, Eigenvalues, SVD, Basis Frames, Matrix Transformations, Instructor Notes, Student Guide">
+<meta name="author" content="Chris A. LaFollette">
+<!-- Open Graph -->
+<meta property="og:title" content="© 2026 cadcando-VLAS Linear Algebra Suite">
+<meta property="og:description" content="Interactive engineering models and visualization tools for mastering linear algebra.">
+<meta property="og:image" content="images/og-preview.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourdomain.com">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="© 2026 cadcando-VLAS Linear Algebra Suite">
+<meta name="twitter:description" content="Interactive engineering models and visualization tools for mastering linear algebra.">
+<meta name="twitter:image" content="images/og-preview.png">
+  <!-- Structured Data Markup (Google Rich Results) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "cadcando-VLAS Linear Algebra Suite",
+  "url": "https://yourdomain.com",
+  "description": "The Linear Algebra Suite provides interactive engineering models, visualization tools, instructor notes, and a complete student guide for mastering linear algebra concepts.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chris A. LaFollette",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yourdomain.com/favicon.ico"
+    }
+  },
+  "creator": {
+    "@type": "Person",
+    "name": "Chris A. LaFollette"
+  }
+}
+</script>
+
+
+
+    <link rel="stylesheet" href="css/style.css">
+    
+    <style>
+        /* Block the h1 completely */
+        header h1 {
+            display: none !important;
+        }
+        /* Display copyright text as the heading */
+        header .page-title {
+            font-size: 2.4em;
+            margin: 0;
+            padding: 0;
+        }
+        /* Hide the visual-title off-screen */
+        header .visual-title {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+        }
+    </style>
+
+    <!-- Three.js r146 -->
+    <script src="js/three.min.js"></script>
+    
+    <!-- Load loaders and controls -->
+    <script src="js/three.js-r146/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="js/three.js-r146/examples/js/controls/OrbitControls.js"></script>
+    
+    <!-- Viewer with custom camera angle -->
+    <script src="js/viewer.js"></script>
+</head>
+
+
+<body>
+
+    <!-- HEADER -->
+    <header>
+        <h1></h1>
+        <div class="page-title gold-solid gold-bevel gold-shimmer">
+    © 2026 cadcando-VLAS Visual Linear Algebra Suite
+</div>
+
+        <div class="visual-title">Your Engineering Suite</div>
+        <p>Tools • Analysis • Visualization</p>
+    </header>
+
+   <!-- NAVIGATION -->
+<nav>
+    <a class="gold-solid gold-bevel gold-shimmer" href="index.html">Home</a>
+    <a class="gold-solid gold-bevel gold-shimmer" href="samples/basisframeplus4_0.zip">Download Free Sample</a>
+    <a class="gold-solid gold-bevel gold-shimmer" href="payment.html">Purchase</a>
+
+    <a class="gold-solid gold-bevel gold-shimmer"
+       href="about.html"
+       title="Created by Chris A. LaFollette — Linear Algebra Suite Author">
+        About
+    </a>
+</nav>
+
+
+
+
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        <div class="hero-logo-quote">
+            <img src="assets/images/cube-lattice.png" alt="Cube-Lattice Logo" class="cube-logo">
+
+            <div class="quote-block">
+                <p class="feynman-quote">
+                    “What I cannot create, I do not understand.”
+                </p>
+                <p class="feynman-author">— Richard Feynman</p>
+            </div>
+        </div>
+
+        <!-- 3D VIEWER SECTION -->
+        <section id="viewer-section">
+            <h2>3D Model Viewer</h2>
+            <div id="viewer"></div>
+        </section>
+
+        <!-- DOWNLOAD SECTION -->
+        <section id="download-section">
+            <h2>Download the Suite</h2>
+            <p>Get the latest version of the Engineering Suite below.</p>
+            <a class="button" href="download-error.html">Download Now</a>
+
+        </section>
+
+    </main>
+
+
+
+<section id="sample-instructions" class="content-section">
+    <h2>Free Sample Instructions</h2>
+
+    <p>
+        This free sample includes 
+        <strong>basisframeplus4_0.lsp</strong>, 
+        <strong>cube_engine.lsp</strong>, and 
+        <strong>acad3dEIGENVIS.dwt</strong>.
+        These files demonstrate the core functionality of the 
+        BasisFramePlus module from the LinearAlgebraSuite.
+        Use AutoCAD Student version or the full AutoCAD version —
+        <strong>NOT AutoCAD LT</strong>.
+    </p>
+
+    <p>
+        The template contains all the necessary layers, colors, and visual 
+        settings to simulate the full Suite. 
+        Point AutoCAD to <strong>acad3dEIGENVIS.dwt</strong> when creating 
+        a new drawing to ensure the sample module loads correctly in acad3D, and with color.
+    </p>
+
+    <ol style="margin-top: 1.5em;">
+        <li>In AutoCAD, type <code>OP</code> and press Enter.</li>
+        <li>Go to the <strong>Files</strong> tab.</li>
+        <li>Expand <strong>Support File Search Path</strong>.</li>
+        <li>Click <strong>Add</strong>.</li>
+        <li>Click <strong>Browse</strong> and select the folder where you extracted:
+            <ul>
+                <li><code>basisframeplus4_0.lsp</code></li>
+                <li><code>cube_engine.lsp</code></li>
+            </ul>
+        </li>
+        <li>Click <strong>OK</strong> to save.</li>
+    </ol> 
+
+    <p>After this, AutoCAD will automatically find and load the sample files when you use <code>APPLOAD</code> or run the <code>BASISFRAMEPLUS4_0</code> command.</p>
+
+    <h3>How to Use in AutoCAD</h3>
+    <ol>
+        <li>Click <strong>Download Free Sample</strong> in the navigation bar.</li>
+        <li>Extract the ZIP file to any folder on your computer.</li>
+        <li>In AutoCAD, type <code>APPLOAD</code> and load both in this order:
+           <ul>
+    <li><code>cube_engine.lsp</code></li>
+    <li><code>basisframeplus4_0.lsp</code></li>
+</ul>
+
+        </li>
+        <li>Run the command: <code>BASISFRAMEPLUS4_0</code></li>
+    </ol>
+
+    <h3>Sample Input</h3>
+<p>Use the following standard basis vectors as a test:</p>
+
+<pre class="sample-input">
+e1 = (1, 0, 0)
+e2 = (0, 1, 0)
+e3 = (0, 0, 1)
+</pre>
+
+
+    <p>This will generate a clean orthonormal frame using the sample module.</p>
+</section>
+
+
+
+    <!-- FOOTER -->
+    <footer>
+        <span class="footer-contact">Support: cadcando@sprintmail.com</span>
+        <p>© 2026 Visual Linear Algebra Suite — All Rights Reserved</p>
+    </footer>
+
+    <script>
+        const DESIRED_TITLE = '© 2026 cadcando-VLAS Linear Algebra Suite';
+        
+        // Set title immediately
+        document.title = DESIRED_TITLE;
+        
+        // Watch and revert any title changes
+        let lastKnownTitle = DESIRED_TITLE;
+        const titleTag = document.querySelector('title');
+        
+        if (titleTag) {
+            const observer = new MutationObserver(() => {
+                if (titleTag.textContent !== DESIRED_TITLE) {
+                    titleTag.textContent = DESIRED_TITLE;
+                    document.title = DESIRED_TITLE;
+                }
+            });
+            observer.observe(titleTag, { childList: true, characterData: true, subtree: true });
+        }
+        
+        // Also watch document.title changes via a getter/setter
+        let _titleValue = DESIRED_TITLE;
+        Object.defineProperty(document, 'title', {
+            get: function() {
+                return _titleValue;
+            },
+            set: function(val) {
+                _titleValue = DESIRED_TITLE;
+                if (titleTag) titleTag.textContent = DESIRED_TITLE;
+            },
+            configurable: true
+        });
+    </script>
+
+</body>
+</html>
+

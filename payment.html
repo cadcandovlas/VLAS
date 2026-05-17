@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase License</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- SEO Meta Tags -->
+<meta name="description" content="The Linear Algebra Suite provides interactive engineering models, visualization tools, instructor notes, and a complete student guide for mastering linear algebra concepts.">
+<meta name="keywords" content="Linear Algebra, Engineering Tools, Visualization, Eigenvalues, SVD, Basis Frames, Matrix Transformations, Instructor Notes, Student Guide">
+<meta name="author" content="Chris A. LaFollette">
+<!-- Open Graph -->
+<meta property="og:title" content="© 2026 cadcando‑VLAS Linear Algebra Suite">
+<meta property="og:description" content="Interactive engineering models and visualization tools for mastering linear algebra.">
+<meta property="og:image" content="images/og-preview.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yourdomain.com">
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="© 2026 cadcando‑VLAS Linear Algebra Suite">
+<meta name="twitter:description" content="Interactive engineering models and visualization tools for mastering linear algebra.">
+<meta name="twitter:image" content="images/og-preview.png">
+  <!-- Structured Data Markup (Google Rich Results) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "cadcando‑VLAS Linear Algebra Suite",
+  "url": "https://yourdomain.com",
+  "description": "The Linear Algebra Suite provides interactive engineering models, visualization tools, instructor notes, and a complete student guide for mastering linear algebra concepts.",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Chris A. LaFollette",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://yourdomain.com/favicon.ico"
+    }
+  },
+  "creator": {
+    "@type": "Person",
+    "name": "Chris A. LaFollette"
+  }
+}
+</script>
+
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="with-background">
+
+    <!-- ⭐ STEP 1 — PAYPAL SDK SCRIPT (insert your Client ID below) ⭐ -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AdfAXt59PcymQv1g7inFUosnmtDBodY1mIpCWVFTOjWo5mb_K9p9cY-G4eLahtETO8pYmhvy01Nbc0vC&components=buttons&enable-funding=venmo"></script>
+
+    <!-- HEADER -->
+    <header>
+        <h1>Your Visual Linear Algebra Suite</h1>
+        <p>Tools • Analysis • Visualization</p>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="download.html">Download</a>
+        <a href="payment.html?v=2">Buy Now</a>
+
+        <a href="about.html">About</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main>
+
+        <!-- PAYMENT SECTION -->
+        <section id="payment-section">
+            <h2>Purchase License</h2>
+            <p>Download available after a secure $1.00 payment.</p>
+
+
+            <!-- ⭐ STEP 2 — BUTTON CONTAINER ⭐ -->
+            <div id="paypal-button-container"></div>
+
+            <!-- ⭐ STEP 3 — RENDERING SCRIPT ⭐ -->
+            <script>
+                paypal.Buttons({
+                    style: {
+                        layout: 'vertical',
+                        color: 'gold',
+                        shape: 'rect',
+                        label: 'paypal'
+                    },
+
+                    createOrder: function(data, actions) {
+                        return actions.order.create({
+                            purchase_units: [{
+                                amount: {
+                                    value: "1.00" // v2
+
+                                }
+                            }]
+                        });
+                    },
+
+                    onApprove: function(data, actions) {
+                        return actions.order.capture().then(function(details) {
+                            alert('Payment completed by ' + details.payer.name.given_name);
+                        });
+                    }
+
+                }).render('#paypal-button-container');
+            </script>
+
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>© 2026 Visual Linear Algebra Suite — All Rights Reserved</p>
+    </footer>
+
+</body>
+</html>
