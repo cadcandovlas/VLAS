@@ -389,3 +389,53 @@ button:hover, .btn:hover {
     background: none !important;
     -webkit-background-clip: unset !important;
 }
+
+/* ================================
+   DOWNLOAD PAGE STYLES
+   ================================ */
+
+.download-container {
+    max-width: 700px;
+    margin: 60px auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.15);
+}
+
+.download-container h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+.download-container p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.download-btn {
+    display: block;
+    width: 260px;
+    margin: 30px auto;
+    padding: 14px;
+    background-color: #0070ba;
+    color: white;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.download-btn:hover {
+    background-color: #005c99;
+}
+
+.download-note {
+    margin-top: 25px;
+    font-size: 15px;
+    color: #666;
+}
