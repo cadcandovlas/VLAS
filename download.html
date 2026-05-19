@@ -15,7 +15,27 @@
 
     <p>To download your software, click the button below. After clicking, your browser will begin downloading the ZIP file.</p>
 
-    <a class="download-btn" href="VLAS.zip">Download the Suite</a>
+    <button class="download-btn" onclick="startDownload()">Download the Suite</button>
+
+<script>
+    function startDownload() {
+        // Obfuscated filename pieces
+        const part1 = "VLAS";
+        const part2 = "-2026-Release";
+        const part3 = "-9f3a2b1";
+        const ext   = ".zip";
+
+        const fileName = part1 + part2 + part3 + ext;
+
+        // If the ZIP is in the same folder as download.html:
+       const filePath = "assets/downloads/" + fileName;
+
+
+        // Start the download
+        window.location.href = filePath;
+    }
+</script>
+
 
     <p class="download-note">
         After clicking the download button:
