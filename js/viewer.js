@@ -158,6 +158,7 @@ function generateUVsForCube(THREE, geometry, name = '') {
     // Spiral pulse data
 let cubeSpiralData = [];
 let spiralReady = false;
+let lastTime = 0;
 let pulseDebugCounter = 0;
 let pulseFirstRun = true;
 let pulseStartTimes = {}; // Track when each cube started pulsing to allow smooth completion
@@ -167,45 +168,24 @@ const PULSE_AMPLITUDE = 3.0;     // 3.0m extension (scale-based pulse works!)
 const PULSE_PERIOD   = 3.0;      // seconds for a full pulse cycle
 const ROTATION_SPEED = 0.1875;   // lattice rotation speed (CW) - slowed 25% from 0.25
 
-// Use THREE.Clock for reliable timing
-const clock = new THREE.Clock();
-let frameStallCounter = 0;  // Track abnormally large frames
 
     // Animation loop
     function animate() {
         requestAnimationFrame(animate);
 
-        let delta = clock.getDelta();  // Get delta time since last frame (in seconds)
-        const now = clock.getElapsedTime();  // Get total elapsed time since clock started
-        
-        // CRITICAL FIX: Cap maximum delta time to prevent stalls from breaking rotation
-        // If delta > 50ms, it indicates browser was stalled (GC, tab switch, etc.)
-        // Clamp to 16.67ms (60fps) to maintain smooth continuous rotation
-        const MAX_DELTA = 0.05;  // 50ms
-        if (delta > MAX_DELTA) {
-            frameStallCounter++;
-            if (frameStallCounter % 10 === 0) {
-                console.warn(`⚠ Frame stall detected: delta=${delta.toFixed(3)}s (${Math.round(1/delta)}fps). Clamping to ${MAX_DELTA}s.`);
-            }
-            delta = MAX_DELTA;
-        }
+        const now = performance.now() * 0.001; // seconds
+        const delta = lastTime ? (now - lastTime) : 0;
+        lastTime = now;
         
         // Debug: log periodically to confirm animation is running
         pulseDebugCounter++;
         if (pulseDebugCounter % 300 === 0) {
-            console.log(`Animation running: now=${now.toFixed(2)}s, spiralReady=${spiralReady}, stalls=${frameStallCounter}`);
+            console.log(`Animation running: now=${now.toFixed(2)}s, spiralReady=${spiralReady}`);
         }
 
         // Lattice rotation (CW when viewed from above)
-        // Use a normalized rotation to prevent floating-point precision loss from unbounded accumulation
         if (model) {
             model.rotation.y -= ROTATION_SPEED * delta;
-            
-            // Normalize rotation to [-PI, PI] periodically to prevent precision loss
-            // This keeps rotation values in a reasonable range without affecting visual result
-            if (Math.abs(model.rotation.y) > Math.PI) {
-                model.rotation.y = model.rotation.y - Math.sign(model.rotation.y) * (2 * Math.PI);
-            }
         }
 
         // Spiral Pulse animation (DOF-respecting vertical/radial movement)
@@ -386,51 +366,44 @@ let frameStallCounter = 0;  // Track abnormally large frames
     console.log('✓ Animation loop started');
 
     // Monitor all 12 center column cubes for location/scale changes
-    // DISABLED by default to prevent frame drops from synchronous logging
-    // To enable debugging, set ENABLE_MONITORING = true
-    const ENABLE_MONITORING = false;
-    let monitoringInterval = null;
+    let monitoringInterval = setInterval(() => {
+        if (!spiralReady || !cubeSpiralData.length) return;
+        
+        // Track ALL 12 center column cubes: (0,1,Z), (2,1,Z), (1,0,Z), (1,2,Z) for Z=1,2,3
+        const centerColumnCubes = cubeSpiralData.filter(c => {
+            // Must be a side cube with maxOffset > 0 (not grounded center)
+            // AND must be part of the 4 cross directions
+            const isXAxis = (Math.abs(c.outward.x) > 0.5); // (0,1,Z) or (2,1,Z)
+            const isYAxis = (Math.abs(c.outward.y) > 0.5); // (1,0,Z) or (1,2,Z)
+            return c.maxOffset > 0 && (isXAxis || isYAxis);
+        });
+        
+        if (centerColumnCubes.length === 0) {
+            console.log('WARNING: No center column cubes found!');
+            return;
+        }
+        
+        // Get current layer from spiral timing
+        const spiralProgress = (performance.now() * 0.001 % 30.0) / 30.0;
+        let activeLayer;
+        if (spiralProgress < 0.33) activeLayer = 3;
+        else if (spiralProgress < 0.67) activeLayer = 2;
+        else activeLayer = 1;
+        
+        console.log(`\n=== CENTER COLUMN TRACKING (${centerColumnCubes.length} cubes) | Active Layer: ${activeLayer} ===`);
+        centerColumnCubes.forEach(c => {
+            const pos = c.mesh.position;
+            const origPos = c.originalMeshPos;
+            const scale = c.mesh.scale;
+            const outward = c.outward;
+            const isActive = c.layer === activeLayer;
+            const posChange = pos.clone().sub(origPos);
+            const distance = posChange.length();
+            console.log(`${c.mesh.name} (L${c.layer}${isActive ? '✓' : ' '}): pos change(${posChange.x.toFixed(2)},${posChange.y.toFixed(2)},${posChange.z.toFixed(2)}) dist=${distance.toFixed(2)} | scale(${scale.x.toFixed(2)},${scale.y.toFixed(2)},${scale.z.toFixed(2)}) | outward(${outward.x.toFixed(1)},${outward.y.toFixed(1)},${outward.z.toFixed(1)})`);
+        });
+    }, 2000); // Update every 2 seconds
     
-    if (ENABLE_MONITORING) {
-        monitoringInterval = setInterval(() => {
-            if (!spiralReady || !cubeSpiralData.length) return;
-            
-            // Track ALL 12 center column cubes: (0,1,Z), (2,1,Z), (1,0,Z), (1,2,Z) for Z=1,2,3
-            const centerColumnCubes = cubeSpiralData.filter(c => {
-                // Must be a side cube with maxOffset > 0 (not grounded center)
-                // AND must be part of the 4 cross directions
-                const isXAxis = (Math.abs(c.outward.x) > 0.5); // (0,1,Z) or (2,1,Z)
-                const isYAxis = (Math.abs(c.outward.y) > 0.5); // (1,0,Z) or (1,2,Z)
-                return c.maxOffset > 0 && (isXAxis || isYAxis);
-            });
-            
-            if (centerColumnCubes.length === 0) {
-                console.log('WARNING: No center column cubes found!');
-                return;
-            }
-            
-            // Get current layer from spiral timing
-            const spiralProgress = (performance.now() * 0.001 % 30.0) / 30.0;
-            let activeLayer;
-            if (spiralProgress < 0.33) activeLayer = 3;
-            else if (spiralProgress < 0.67) activeLayer = 2;
-            else activeLayer = 1;
-            
-            console.log(`\n=== CENTER COLUMN TRACKING (${centerColumnCubes.length} cubes) | Active Layer: ${activeLayer} ===`);
-            centerColumnCubes.forEach(c => {
-                const pos = c.mesh.position;
-                const origPos = c.originalMeshPos;
-                const scale = c.mesh.scale;
-                const outward = c.outward;
-                const isActive = c.layer === activeLayer;
-                const posChange = pos.clone().sub(origPos);
-                const distance = posChange.length();
-                console.log(`${c.mesh.name} (L${c.layer}${isActive ? '✓' : ' '}): pos change(${posChange.x.toFixed(2)},${posChange.y.toFixed(2)},${posChange.z.toFixed(2)}) dist=${distance.toFixed(2)} | scale(${scale.x.toFixed(2)},${scale.y.toFixed(2)},${scale.z.toFixed(2)}) | outward(${outward.x.toFixed(1)},${outward.y.toFixed(1)},${outward.z.toFixed(1)})`);
-            });
-        }, 5000); // Update every 5 seconds (only when enabled)
-    }
-    
-    console.log('✓ Central column coordinate tracking ' + (ENABLE_MONITORING ? 'enabled' : 'disabled'));
+    console.log('✓ Central column coordinate tracking initialized');
 
     // Load model
     console.log('\n=== Loading Model ===');
