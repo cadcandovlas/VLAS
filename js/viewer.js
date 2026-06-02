@@ -149,11 +149,12 @@ function generateUVsForCube(THREE, geometry, name = '') {
     // Controls
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.autoRotate = false;  // Disabled - model rotation now driven by spiral animation
-    controls.enableDamping = true;
+    controls.enableDamping = false;  // Disable damping to prevent quaternion accumulation
     controls.dampingFactor = 0.05;
     console.log('✓ Orbit controls created');
 
     let model = null;
+    let modelRotationAngle = 0;  // Track total rotation angle (avoids quaternion accumulation errors)
 
     // Spiral pulse data
 let cubeSpiralData = [];
@@ -183,9 +184,15 @@ const ROTATION_SPEED = 0.1875;   // lattice rotation speed (CW) - slowed 25% fro
             console.log(`Animation running: now=${now.toFixed(2)}s, spiralReady=${spiralReady}`);
         }
 
-        // Lattice rotation (CW when viewed from above)
+        // Lattice rotation using quaternions (avoids Euler angle precision loss)
         if (model) {
-            model.rotation.y -= ROTATION_SPEED * delta;
+            // Accumulate rotation as angle, convert to quaternion each frame
+            modelRotationAngle -= ROTATION_SPEED * delta;  // CCW (negative for CW)
+            
+            // Create fresh quaternion from accumulated angle
+            const rotationQuat = new THREE.Quaternion();
+            rotationQuat.setFromAxisAngle(new THREE.Vector3(0, 1, 0), modelRotationAngle);
+            model.quaternion.copy(rotationQuat);
         }
 
         // Spiral Pulse animation (DOF-respecting vertical/radial movement)
@@ -214,11 +221,10 @@ const ROTATION_SPEED = 0.1875;   // lattice rotation speed (CW) - slowed 25% fro
                 // Vertical cubes: 113 (+Z), 111 (-Z) with maxOffset = 0.25
                 const isVertical = Math.abs(c.outward.z) > 0.5;
                 
-                // Parse cube position from name (Cube_X_Y_Z)
-                const nameParts = mesh.name.split('_');
-                const cubeX = parseInt(nameParts[1]);
-                const cubeY = parseInt(nameParts[2]);
-                const cubeZ = parseInt(nameParts[3]);
+                // Use cached cube coordinates (no string parsing!)
+                const cubeX = c.cubeX;
+                const cubeY = c.cubeY;
+                const cubeZ = c.cubeZ;
                 
                 // Corner cubes: both X and Y at extremes (0,0), (0,2), (2,0), (2,2)
                 const isCornerCube = (cubeX === 0 || cubeX === 2) && (cubeY === 0 || cubeY === 2);
@@ -434,6 +440,9 @@ const ROTATION_SPEED = 0.1875;   // lattice rotation speed (CW) - slowed 25% fro
 
                 model = gltf.scene;
                 scene.add(model);
+                
+                // Reset rotation angle when model loads
+                modelRotationAngle = 0;
 
                 // --- Spiral Pulse: collect cube data and build spiral order ---
 
@@ -576,7 +585,11 @@ const ROTATION_SPEED = 0.1875;   // lattice rotation speed (CW) - slowed 25% fro
                         layer,
                         angle,
                         maxOffset,  // Per-cube offset magnitude (0.25 for vertical, 0.1 for radial)
-                        phaseIndex: 0
+                        phaseIndex: 0,
+                        // Cache parsed cube coordinates to avoid string parsing every frame
+                        cubeX,
+                        cubeY,
+                        cubeZ
                     });
                 });
 
